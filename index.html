@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Contrarian Content Framework</title>
+    <meta name="description" content="The framework behind content that starts conversations, not just collects likes.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --black: #0d0d0d;
+            --charcoal: #1a1a1a;
+            --smoke: #2a2a2a;
+            --cream: #f5f0e8;
+            --cream-muted: #c4bfb4;
+            --vermillion: #e63b2e;
+            --vermillion-dark: #c42f24;
+            --vermillion-glow: rgba(230, 59, 46, 0.15);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            font-size: 18px;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            background: var(--black);
+            color: var(--cream);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Noise texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+        
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 80px 0;
+            position: relative;
+        }
+        
+        .hero-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: var(--vermillion);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards;
+            animation-delay: 0.2s;
+        }
+        
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            max-width: 900px;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards;
+            animation-delay: 0.4s;
+        }
+        
+        .hero h1 em {
+            font-style: italic;
+            color: var(--vermillion);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--cream-muted);
+            max-width: 600px;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards;
+            animation-delay: 0.6s;
+        }
+        
+        .hero-cta {
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease forwards;
+            animation-delay: 0.8s;
+        }
+        
+        /* Diagonal accent line */
+        .hero::after {
+            content: '';
+            position: absolute;
+            right: 10%;
+            top: 20%;
+            width: 2px;
+            height: 300px;
+            background: linear-gradient(to bottom, transparent, var(--vermillion), transparent);
+            transform: rotate(15deg);
+            opacity: 0.5;
+        }
+        
+        /* Framework Section */
+        .framework {
+            padding: 120px 0;
+            background: var(--charcoal);
+            position: relative;
+        }
+        
+        .framework::before {
+            content: '"';
+            position: absolute;
+            top: 60px;
+            left: 5%;
+            font-family: 'Playfair Display', serif;
+            font-size: 20rem;
+            color: var(--smoke);
+            line-height: 1;
+            pointer-events: none;
+        }
+        
+        .framework-intro {
+            max-width: 700px;
+            margin-bottom: 80px;
+        }
+        
+        .framework-intro h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .framework-intro p {
+            color: var(--cream-muted);
+            font-size: 1.1rem;
+        }
+        
+        /* The 4 Steps */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2px;
+            background: var(--smoke);
+            position: relative;
+        }
+        
+        .step {
+            background: var(--charcoal);
+            padding: 48px 32px;
+            position: relative;
+            transition: all 0.4s ease;
+        }
+        
+        .step:hover {
+            background: var(--black);
+        }
+        
+        .step-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--smoke);
+            line-height: 1;
+            margin-bottom: 24px;
+            transition: color 0.4s ease;
+        }
+        
+        .step:hover .step-number {
+            color: var(--vermillion);
+        }
+        
+        .step h3 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .step p {
+            color: var(--cream-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        
+        /* Arrow connectors */
+        .step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--vermillion);
+            z-index: 10;
+        }
+        
+        /* Prompts Preview Section */
+        .prompts {
+            padding: 120px 0;
+            background: var(--black);
+        }
+        
+        .prompts h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .prompts-subtitle {
+            color: var(--cream-muted);
+            font-size: 1.1rem;
+            margin-bottom: 60px;
+            max-width: 600px;
+        }
+        
+        .prompt-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            max-width: 900px;
+        }
+        
+        .prompt-card {
+            background: var(--charcoal);
+            border-left: 3px solid var(--vermillion);
+            padding: 28px 32px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .prompt-card:hover {
+            transform: translateX(8px);
+            background: var(--smoke);
+        }
+        
+        .prompt-card::before {
+            content: '"';
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--vermillion);
+            opacity: 0.3;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+        
+        .prompt-card p {
+            font-size: 1rem;
+            font-style: italic;
+        }
+        
+        .prompt-locked {
+            opacity: 0.4;
+            filter: blur(2px);
+            user-select: none;
+        }
+        
+        .prompts-cta {
+            margin-top: 48px;
+            font-size: 0.9rem;
+            color: var(--cream-muted);
+        }
+        
+        .prompts-cta span {
+            color: var(--vermillion);
+            font-weight: 600;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 120px 0;
+            background: linear-gradient(135deg, var(--vermillion-dark) 0%, var(--vermillion) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        
+        .cta-section::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        
+        .cta-content {
+            max-width: 600px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cta-content h2 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .cta-content p {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 2.5rem;
+        }
+        
+        /* Form */
+        .capture-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 400px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 18px 20px;
+            font-size: 1rem;
+            font-family: inherit;
+            background: rgba(0,0,0,0.3);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 4px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: white;
+            background: rgba(0,0,0,0.5);
+        }
+        
+        .btn-submit {
+            padding: 18px 40px;
+            font-size: 1rem;
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: white;
+            color: var(--vermillion);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .form-note {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 8px;
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 40px 0;
+            background: var(--black);
+            border-top: 1px solid var(--smoke);
+            text-align: center;
+        }
+        
+        .footer p {
+            font-size: 0.85rem;
+            color: var(--cream-muted);
+        }
+        
+        .footer a {
+            color: var(--vermillion);
+            text-decoration: none;
+        }
+        
+        /* Animations */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Success State */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .success-message.visible {
+            display: block;
+        }
+        
+        .success-message h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .success-message p {
+            color: rgba(255,255,255,0.85);
+        }
+        
+        .form-content.hidden {
+            display: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 900px) {
+            .steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .step:nth-child(2)::after,
+            .step:nth-child(4)::after {
+                display: none;
+            }
+            .prompt-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            html { font-size: 16px; }
+            .container { padding: 0 24px; }
+            .steps { grid-template-columns: 1fr; }
+            .step::after { display: none; }
+            .hero h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <p class="hero-label">A Framework for Founders</p>
+            <h1>Content that starts <em>conversations</em>, not just collects likes.</h1>
+            <p class="hero-subtitle">The exact framework used to create debates that get millions of views. Steal it for your content.</p>
+            <div class="hero-cta">
+                <a href="#get-framework" style="color: var(--vermillion); text-decoration: none; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.9rem;">
+                    Get the Framework →
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Framework -->
+    <section class="framework">
+        <div class="container">
+            <div class="framework-intro">
+                <h2>The Contrarian Content Framework</h2>
+                <p>Most content gets ignored because it says what everyone already thinks. The content that spreads? It challenges. It provokes. It starts a debate. Here's how:</p>
+            </div>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">01</div>
+                    <h3>Setup</h3>
+                    <p>State the common belief. The thing everyone "knows" to be true. Set the stage for what you're about to challenge.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">02</div>
+                    <h3>Tension</h3>
+                    <p>Challenge it. Introduce the contrarian take. Create cognitive dissonance. This is where attention locks in.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">03</div>
+                    <h3>Stakes</h3>
+                    <p>Why does this matter? What's at risk if people keep believing the old way? Make it personal. Make it urgent.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">04</div>
+                    <h3>Resolution</h3>
+                    <p>Your take. The new way forward. Or leave it open—let the audience debate. Either works.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Prompts Preview -->
+    <section class="prompts">
+        <div class="container">
+            <h2>15 Debate Prompts You Can Steal</h2>
+            <p class="prompts-subtitle">Fill-in-the-blank templates that work for any industry. Here's a taste:</p>
+            
+            <div class="prompt-grid">
+                <div class="prompt-card">
+                    <p>"Everyone says [common advice]. But what if that's exactly why most people fail at [outcome]?"</p>
+                </div>
+                <div class="prompt-card">
+                    <p>"The [industry] advice that built my competitor's business is the same advice that almost killed mine."</p>
+                </div>
+                <div class="prompt-card prompt-locked">
+                    <p>"I stopped doing [best practice] and my [metric] went up 3x. Here's the uncomfortable truth..."</p>
+                </div>
+                <div class="prompt-card prompt-locked">
+                    <p>"What if [popular tool/method] is actually making your [problem] worse?"</p>
+                </div>
+            </div>
+            
+            <p class="prompts-cta"><span>13 more prompts</span> + the full framework in the free PDF ↓</p>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section" id="get-framework">
+        <div class="container">
+            <div class="cta-content">
+                <div class="form-content" id="formContent">
+                    <h2>Get the Full Framework</h2>
+                    <p>The complete Contrarian Content Framework + all 15 debate prompts. Free PDF, no fluff.</p>
+                    
+                    <form class="capture-form" id="captureForm">
+                        <div class="form-group">
+                            <input type="email" id="email" placeholder="Your email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="industry" placeholder="Your industry (e.g., Real Estate, SaaS, Consulting)">
+                        </div>
+                        <button type="submit" class="btn-submit" id="submitBtn">Send Me the Framework</button>
+                    </form>
+                    <p class="form-note">No spam. Unsubscribe anytime.</p>
+                </div>
+                
+                <div class="success-message" id="successMessage">
+                    <h3>Check Your Inbox 📬</h3>
+                    <p>The Contrarian Content Framework is on its way. Go make some noise.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>The Contrarian Content Framework — from <a href="https://www.youtube.com/@thedanahowell" target="_blank">Cardone Debates</a></p>
+        </div>
+    </footer>
+    
+    <script>
+        document.getElementById('captureForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+            
+            const email = document.getElementById('email').value.trim();
+            const industry = document.getElementById('industry').value.trim();
+            
+            try {
+                const response = await fetch('/api/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, industry })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('formContent').classList.add('hidden');
+                    document.getElementById('successMessage').classList.add('visible');
+                } else {
+                    throw new Error(data.error || 'Something went wrong');
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                // Show success anyway for demo (remove in production)
+                document.getElementById('formContent').classList.add('hidden');
+                document.getElementById('successMessage').classList.add('visible');
+            }
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
